@@ -24,6 +24,8 @@ inputElement.addEventListener('keydown', event => {
 
 
 function upgradeView () {
+    const selectedModeFlag = getSelectedModeFlag();
+
     ulElement.innerHTML = '';
 
     for (let index = 0; index < todoList.length; index++) {
@@ -86,7 +88,7 @@ function upgradeView () {
             upgradeView();
         })
 
-        const someSelected = todoList.some(todoItem => todoItem.selected);
+/*         const someSelected = todoList.some(todoItem => todoItem.selected);
         if (someSelected) {
             actionPanel1.style.display = 'none';
             actionPanel2.style.display = 'block';
@@ -95,9 +97,24 @@ function upgradeView () {
             actionPanel2.style.display = 'none';
         }
 
+*/
         
-    }
+    } 
+
+    actionPanel1.style.display = selectedModeFlag ? 'none' : 'flex';
+    actionPanel2.style.display = selectedModeFlag ? 'block' : 'none';
 }
+
+function getSelectedModeFlag () {
+	for (const todoItem of todoList) {
+		if (todoItem.selected) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
  document.getElementById('doneAction').addEventListener('click', () => {
     for (const todoItem of todoList) {
         if (todoItem.selected) {
@@ -130,3 +147,5 @@ document.getElementById('test').addEventListener('click', () => {
     }
     upgradeView();
 });
+
+upgradeView();
