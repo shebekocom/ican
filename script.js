@@ -1,13 +1,15 @@
 const inputElement = document.getElementById('input');
 const ulElement = document.getElementById('list');
+const actionPanel1 = document.getElementById('actionPanel1')
+const actionPanel2 = document.getElementById('actionPanel2')
 
 let todoList = []
-//upgradeView()
+actionPanel2.style.display = 'none';
 
 
 
 inputElement.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.keyCode === 13) {
+    if ((event.key === 'Enter' || event.keyCode === 13) && (inputElement.value)) {
         todoList.unshift({
             content: inputElement.value,
             done: false,
@@ -51,31 +53,49 @@ function upgradeView () {
         labelElement.setAttribute ('for', 'todoItem' + index);
         labelElement.innerText = todoItem.content;
 
-        const buttonDoneElement = document.createElement('button');
-        divElement.append(buttonDoneElement);
-        buttonDoneElement.type = 'button';
-        buttonDoneElement.className = 'btn btn-outline-primary';
-        buttonDoneElement.innerText = 'Done';
-
-        const buttonRemoveElement = document.createElement('button');
-        divElement.append(buttonRemoveElement);
-        buttonRemoveElement.type = 'button';
-        buttonRemoveElement.className = 'btn btn-outline-danger';
-        buttonRemoveElement.innerText = 'Remove';
+        if (!todoItem.done) {
+            const buttonDoneElement = document.createElement('button');
+            divElement.append(buttonDoneElement);
+            buttonDoneElement.type = 'button';
+            buttonDoneElement.className = 'btn btn-outline-primary';
+            buttonDoneElement.innerText = 'Done';
+            buttonDoneElement.style = 'float:right';
 
         buttonDoneElement.addEventListener('click', () => {
-            todoItem.done=!todoItem.done;
+            todoItem.done = !todoItem.done;
             upgradeView();
         });
+        }
+        else {
+            const buttonRemoveElement = document.createElement('button');
+            divElement.append(buttonRemoveElement);
+            buttonRemoveElement.type = 'button';
+            buttonRemoveElement.className = 'btn btn-outline-danger';
+            buttonRemoveElement.innerText = 'Remove';
+            buttonRemoveElement.style = 'float:right';
+
+            buttonRemoveElement.addEventListener('click', () => {
+                todoList = todoList.filter(currentTodoItem => currentTodoItem !== todoItem)
+                upgradeView();
+            })
+
+      }
 
         checkboxElement.addEventListener('change', () => {
             todoItem.selected = checkboxElement.checked;
-        })
-
-        buttonRemoveElement.addEventListener('click', () => {
-            todoList = todoList.filter(currentTodoItem => currentTodoItem !== todoItem)
             upgradeView();
         })
+
+        const someSelected = todoList.some(todoItem => todoItem.selected);
+        if (someSelected) {
+            actionPanel1.style.display = 'none';
+            actionPanel2.style.display = 'block';
+        } else {
+            actionPanel1.style.display = 'flex';
+            actionPanel2.style.display = 'none';
+        }
+
+        
     }
 }
  document.getElementById('doneAction').addEventListener('click', () => {
