@@ -1,20 +1,17 @@
-const selectAllButton = document.getElementById('test');
 const inputElement = document.getElementById('input');
 const ulElement = document.getElementById('list');
 
-const todoList = []
+let todoList = []
 //upgradeView()
 
 
-selectAllButton.addEventListener('click', () => {
-    console.log('fired');
-});
 
 inputElement.addEventListener('keydown', event => {
     if (event.key === 'Enter' || event.keyCode === 13) {
         todoList.unshift({
             content: inputElement.value,
-            done: false
+            done: false,
+            selected: false
         })
         inputElement.value = '';
 
@@ -43,12 +40,13 @@ function upgradeView () {
         checkboxElement.type = 'checkbox';
         checkboxElement.className = 'form-check-input';
         checkboxElement.id = 'todoItem' + index;
+        checkboxElement.checked = todoItem.selected;
 
         const labelElement = document.createElement('label');
         divElement.append(labelElement)
         labelElement.className = 'form-check-label';
         if (todoItem.done) {
-            labelElement.className == ' todoDone';
+            labelElement.className += ' todoDone';
         }
         labelElement.setAttribute ('for', 'todoItem' + index);
         labelElement.innerText = todoItem.content;
@@ -69,5 +67,46 @@ function upgradeView () {
             todoItem.done=!todoItem.done;
             upgradeView();
         });
+
+        checkboxElement.addEventListener('change', () => {
+            todoItem.selected = checkboxElement.checked;
+        })
+
+        buttonRemoveElement.addEventListener('click', () => {
+            todoList = todoList.filter(currentTodoItem => currentTodoItem !== todoItem)
+            upgradeView();
+        })
     }
 }
+ document.getElementById('doneAction').addEventListener('click', () => {
+    for (const todoItem of todoList) {
+        if (todoItem.selected) {
+            todoItem.done = true;
+            todoItem.selected = false;
+        }
+    }
+
+    upgradeView();
+})
+
+document.getElementById('restoreAction').addEventListener('click', () => {
+        for (const todoItem of todoList) {
+            if (todoItem.selected) {
+                todoItem.done = false;
+                todoItem.selected = false;
+            }
+        }
+    upgradeView();
+})
+
+document.getElementById('removeAction').addEventListener('click', () => {
+    todoList = todoList.filter(todoItem => !todoItem.selected);
+    upgradeView();
+})
+
+document.getElementById('test').addEventListener('click', () => {
+    for (const todoItem of todoList) {
+        todoItem.selected = true;
+    }
+    upgradeView();
+});
